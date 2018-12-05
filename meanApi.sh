@@ -16,25 +16,28 @@ const $2s = require("../controllers/$3s");
 const Users = require("../controllers/users");
 
 module.exports = function(app){
-    app.get("/user", Users.getAll);
-    app.post("/user", Users.create);
-    app.post("/$3/:_id", $2s.create);
+  app.get("/users", Users.getAll);
+  app.get("/$3s", $2s.getAll);
+  app.post("/users", Users.create);
+  app.post("/$3s/:id", $2s.create);
+  app.put("/$3s/:id", $2s.update);
+  app.delete("/$3s/:id", $2s.delete);
 }
 EOL
 cat >> mongoose.js <<EOL
 console.log("inside of mongoose.js");
 
 module.exports = function (db_name){
-    const mongoose = require("mongoose");
-    const fs = require("fs");
-    const path = require("path");
-    mongoose.connect('mongodb://localhost/' + db_name);
+  const mongoose = require("mongoose");
+  const fs = require("fs");
+  const path = require("path");
+  mongoose.connect('mongodb://localhost/' + db_name);
 
-    for(let file of fs.readdirSync(path.join(__dirname, "../models"))){
-        if(file.endsWith(".js")){
-            require(path.join(__dirname, "../models", file));
-        }
+  for(let file of fs.readdirSync(path.join(__dirname, "../models"))){
+    if(file.endsWith(".js")){
+      require(path.join(__dirname, "../models", file));
     }
+  }
 }
 EOL
 cd ..
@@ -47,25 +50,25 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 
 class Users {
-    getAll(req, res){
-        User.find({}, function(err, users){
-            if(err){
-                res.json({"status": "not ok", "errors": err});
-            }else{
-                res.json({"status": "ok", "users": users});
-            }
-        });
-    }
-    create(req, res){
-        let user = new User(req.body);
-        user.save(function(err){
-            if(err){
-                res.json({"status": "not ok", "errors": err});
-            }else{
-                res.json({"status": "ok"});
-            }
-        });
-    }
+  getAll(req, res){
+    User.find({}, function(err, users){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        res.json({"status": "ok", "users": users});
+      }
+    });
+  }
+  create(req, res){
+    let user = new User(req.body);
+    user.save(function(err){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        res.json({"status": "ok"});
+      }
+    });
+  }
 }
 
 module.exports = new Users();
@@ -75,26 +78,53 @@ console.log("inside of $3s.js");
 
 const mongoose = require("mongoose");
 const $2 = mongoose.model("$2");
+const User = mongoose.model("User");
 
 class $2s {
-    create(req, res){
-        let $3 = new $2(req.body);
-        $3.save(function(err){
-            if(err){
-                res.json({"status": "not ok", "errors": err});
-            }else{
-                User.findOneAndUpdate({_id: req.params._id}, {\$push: {$3s: $3}}, function(err, data){
-                    if(err){
-                        res.json({"status": "not ok", "errors": err});
-                    }else{
-                        res.json({"status": "ok", "data": data});
-                    }
-                });
-            }
+  create(req, res){
+    let $3 = new $2(req.body);
+    $3.save(function(err){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        User.findOneAndUpdate({_id: req.params.id}, {\$push: {$3s: $3}}, function(err, data){
+          if(err){
+            res.json({"status": "not ok", "errors": err});
+          }else{
+            res.json({"status": "ok", "data": data});
+          }
         });
-    }
+      }
+    });
+  }
+  getAll(req, res){
+    $2.find({}, function(err, $3s){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        res.json({"status": "ok", "$3s": $3s});
+      }
+    });
+  }
+  update(req, res) {
+    $2.findOneAndUpdate({_id: req.params.id}, {\$set: {name: req.body.name}}, function(err, data){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        res.json({"status": "ok", "data": data});
+      }
+    });
+  }
+  delete(req, res) {
+    $2.findByIdAndRemove({_id: req.params.id}, function(err, data){
+      if(err){
+        res.json({"status": "not ok", "errors": err});
+      }else{
+        res.json({"status": "ok", "data": data});
+      }
+    });
+  }
 }
-
 module.exports = new $2s();
 EOL
 cd ..
@@ -107,8 +137,8 @@ const mongoose = require("mongoose");
 const $2Schema = require("./$3.js");
 
 const UserSchema = new mongoose.Schema({
-    name: {type: String, required: [true, "User must have a name"]},
-    $3s: [$2Schema]
+  name: {type: String, required: [true, "User must have a name"]},
+  $3s: [$2Schema]
 });
 
 mongoose.model('User', UserSchema);
@@ -119,7 +149,7 @@ console.log("inside of $3.js");
 const mongoose = require("mongoose");
 
 const $2Schema = new mongoose.Schema({
-    name: {type: String, required: [true, "$2 must have a name"]},
+  name: {type: String, required: [true, "$2 must have a name"]},
 });
 
 mongoose.model('$2', $2Schema);
@@ -144,6 +174,6 @@ require("./server/config/mongoose")(db_name);
 require("./server/config/routes")(app);
 
 app.listen(port, function() {
-    console.log(`listening on port ${port}`);
+    console.log(`listening on port \${port}`);
 });
 EOL
