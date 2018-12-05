@@ -83,7 +83,7 @@ class $2s {
             if(err){
                 res.json({"status": "not ok", "errors": err});
             }else{
-                User.findOneAndUpdate({_id: req.params._id}, {$push: {$3s: $3}}, function(err, data){
+                User.findOneAndUpdate({_id: req.params._id}, {\$push: {$3s: $3}}, function(err, data){
                     if(err){
                         res.json({"status": "not ok", "errors": err});
                     }else{
