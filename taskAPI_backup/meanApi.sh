@@ -31,7 +31,7 @@ module.exports = function (db_name){
   const mongoose = require("mongoose");
   const fs = require("fs");
   const path = require("path");
-  mongoose.connect('mongodb://localhost/' + db_name, { useNewUrlParser: true });
+  mongoose.connect('mongodb://localhost/' + db_name);
 
   for(let file of fs.readdirSync(path.join(__dirname, "../models"))){
     if(file.endsWith(".js")){
@@ -158,56 +158,10 @@ module.exports = $2Schema;
 EOL
 cd ..
 cd ..
-cat >> .gitignore << EOL
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# compiled output
-/dist
-/tmp
-/out-tsc
-
-# dependencies
-/node_modules
-
-# profiling files
-chrome-profiler-events.json
-speed-measure-plugin.json
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
-
-# System Files
-.DS_Store
-Thumbs.db
-EOL
+echo 'node_modules/' > .gitignore
 npm init -y
-npm i express mongoose
+npm i express ejs body-parser mongoose
 cat >> server.js <<EOL
-console.log("inside of server.js");
-
 const express = require("express"),
            bp = require("body-parser"),
           app = express(),
@@ -215,7 +169,6 @@ const express = require("express"),
          port = 8888;
 
 app.use(bp.json());
-app.use(express.static( __dirname + '/client/dist/client' ));
 
 require("./server/config/mongoose")(db_name);
 require("./server/config/routes")(app);
@@ -224,95 +177,3 @@ app.listen(port, function() {
     console.log(`listening on port \${port}`);
 });
 EOL
-cat >| package.json <<EOL
-{
-  "name": "Angular",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "mongoose": "^5.3.15"
-  }
-}
-EOL
-ng new client
-git init
-git add .
-git commit -m "First Commit"
-cd client
-cd src
-cd app
-
-cat >| app.component.ts << EOL
-import { Component } from '@angular/core';
-import { $2Service } from './$3.service';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  title = 'MEAN';
-  users = [];
-
-  constructor(private _$3Service:$2Service){}
-
-  ngOnInit(){
-    this._$3Service.getUsers().subscribe((data) => {
-      console.log(data);
-      this.users = data['users'];
-    });
-  }
-}
-EOL
-cat >| app.module.ts << EOL
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { $2Service } from './$3.service';
-import { HttpClientModule } from '@angular/common/http';
-
-import { AppComponent } from './app.component';
-
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule
-  ],
-  providers: [$2Service],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-EOL
-cat >| $3.service.ts << EOL
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class $2Service {
-
-  constructor(private _http: HttpClient) { }
-
-  getUsers(){
-    return this._http.get("/user");
-  }
-}
-EOL
-cd ..
-cd ..
-rm .gitignore
-ng build --watch
