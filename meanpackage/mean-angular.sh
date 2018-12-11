@@ -127,20 +127,5 @@ echo ' * Navigating into Project>Client>Src from Project>Client>Src>App Folder..
 cd ..
 echo ' * Navigating into Project>Client from Project>Client>Src Folder..'
 cd ..
-echo ' * Deleting Angular .gitignore file'
-rm .gitignore
-echo ' * Deleting Angular .git folder'
-rm .git
-echo ' * Navigating into Project from Project>Client Folder..'
-cd ..
-echo ' * Initiallizing Git..'
-git init
-echo ' * Staging all Changes on Git..'
-git add .
-echo ' * Committing all Changes..'
-git commit -m "First Commit"
-echo ' * Navigating into Project Folder..'
-cd client
-echo ' * Setup Completed'
-echo ' * Activating Angular Build and Watch..'
-ng build --watch
+echo ' * Calling ../../meanpackage/mean-components.sh..'
+. ../../meanpackage/mean-components.sh
