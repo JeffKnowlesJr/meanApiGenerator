@@ -21,7 +21,7 @@ cat >| app.component.html << EOL
     </form>
   </fieldset>
 </div>
-<app-$3 *ngFor="let $3 of $3s" [$3]="$3" ($3Event)="andGet$2s()"></app-$3>
+<!--<app-$3 *ngFor="let $3 of $3s" [$3]="$3" ($3Event)="andGet$2s()"></app-$3>-->
 EOL
 echo ' * Writing Project>Client>Src>App> * app.component.ts File..'
 cat >| app.component.ts << EOL

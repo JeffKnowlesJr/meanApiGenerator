@@ -48,7 +48,7 @@ class $2s {
       if(err){
         res.json({"status": "not ok", "errors": err});
       }else{
-        res.json({"status": "ok", "data": data});
+        res.json({"status": "ok", "data": $3});
       }
     });
   }
