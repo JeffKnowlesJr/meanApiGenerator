@@ -2,6 +2,10 @@ echo ' * Initializing Angular Client Build..'
 ng new client
 echo ' * Navigating into Project>Client Folder..'
 cd client
+echo ' * Creating MODEL1 service'
+ng g s $3
+echo ' * Creating MODEL2 service'
+ng g s $5
 echo ' * Navigating into Project>Client>Src Folder..'
 cd src
 echo ' * Navigating into Project>Client>Src>App Folder..'
